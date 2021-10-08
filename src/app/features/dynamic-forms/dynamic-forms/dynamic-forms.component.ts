@@ -4,7 +4,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { DynamicFormsService } from './services/dynamic-forms.service';
-import { SelectionOption } from './services/types/dynamic-forms.types';
+import { SelectionOption } from './types/dynamic-forms.types';
 
 @Component({
   selector: 'app-dynamic-forms',
@@ -23,7 +23,7 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
     key: 'FormsTypesSelection',
     type: 'select',
     focus: true,
-    wrappers: ['panel'],
+    // wrappers: ['panel'],
     templateOptions: {
       label: 'Forms types',
       required: true,
@@ -34,7 +34,24 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
       change: this.onFormTypeChange.bind(this)
 
     }
-  }]
+  },
+    // {
+    //   key: 'address23',
+    //   wrappers: ['panel'],
+    //   templateOptions: { label: 'Address' },
+    //   fieldGroup: [{
+    //     key: 'town',
+    //     type: 'input',
+    //     templateOptions: {
+    //       required: true,
+    //       type: 'text',
+    //       label: 'Town',
+    //     },
+    //   }
+
+    //   ],
+    // },
+  ]
 
 
   constructor(private dynamicFormsService: DynamicFormsService, private cd: ChangeDetectorRef) { }
@@ -49,8 +66,10 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
 
 
   onFormTypeChange(model: any, { value }: any) {
-
-    this.dynamicFormsService.getFormDetails(value.value).subscribe()
+    this.dynamicFormsService.getFormDetails(value.value).subscribe((res: FormlyFieldConfig[]) => {
+      this.fields = [this.fields[0], ...res];
+      this.cd.detectChanges();
+    })
   }
 
 

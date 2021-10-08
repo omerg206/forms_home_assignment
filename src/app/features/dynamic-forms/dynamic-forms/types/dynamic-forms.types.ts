@@ -28,14 +28,13 @@ export interface FormEnum {
 }
 
 export interface FormType {
-  type: 'String' | 'Date' ;
+  type: 'String' | 'Date' | 'Enum';
   require?: boolean;
 }
 
-export interface FormTypeEnum {
-  type: 'Enum';
+export interface FormTypeEnum extends FormType {
   enumValues: string[];
-  require?: boolean;
+
 }
 
 export interface ServerFromDetailsSchemaPropValue {
@@ -48,3 +47,8 @@ export interface ServerFormDetailsResponse {
 
 }
 
+export  enum ConvertServerFiledTypeToFormType {
+  String = 'input',
+  Date = 'datepicker',
+  Enum = 'select'
+}
