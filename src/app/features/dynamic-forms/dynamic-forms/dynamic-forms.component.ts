@@ -18,7 +18,6 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
   model: any = {};
   options: FormlyFormOptions = {};
   fields: FormlyFieldConfig[] = [];
-  selectionOptions$: BehaviorSubject<SelectionOption[]> = new BehaviorSubject<SelectionOption[]>([]);
   currentSelectedFormType: string = 'Main';
 
   constructor(private dynamicFormsService: DynamicFormsService, private cd: ChangeDetectorRef) { }
@@ -26,11 +25,6 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.fields.push(this.addStartupFormTypesPicker());
-
-    this.dynamicFormsService.getFormsTypesFromServer().pipe(
-      takeUntil(this.onDestroy$)).subscribe((options: SelectionOption[]) => {
-        this.selectionOptions$.next(options);
-      })
   }
 
   //consider moving this function to a service
@@ -45,7 +39,7 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
         label: 'Forms types',
         required: false,
         readonly: true,
-        options: this.selectionOptions$,
+        options: this.dynamicFormsService.getFormsTypesFromServer(),
         valueProp: (option: any) => option,
         // compareWith: (o1: any, o2: any) => o1.value === o2.value,
         change: this.onFormTypeChange.bind(this)
@@ -57,7 +51,9 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
 
   onFormTypeChange(model: any, { value: selectedFromType }: any) {
     this.currentSelectedFormType = selectedFromType.value;
-    // this.fields = [this.fields[0]]; // reset form keep only form type selection;
+    this.fields = [this.fields[0]];
+    this.fields[0].defaultValue = this.currentSelectedFormType;
+    // reset form keep only form type selection;
     this.dynamicFormsService.getFormDetails(selectedFromType.value).pipe(takeUntil(this.onDestroy$)).subscribe((res: FormlyFieldConfig[]) => {
       this.fields = [...this.fields, ...res];
       this.cd.detectChanges();
