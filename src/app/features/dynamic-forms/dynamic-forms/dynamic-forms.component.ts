@@ -17,57 +17,46 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
   form: FormGroup = new FormGroup({});
   model: any = {};
   options: FormlyFormOptions = {};
-  selectionOptions: BehaviorSubject<SelectionOption[]> = new BehaviorSubject<SelectionOption[]>([]);
-
-  fields: FormlyFieldConfig[] = [{
-    key: 'FormsTypesSelection',
-    type: 'select',
-    focus: true,
-    // wrappers: ['panel'],
-    templateOptions: {
-      label: 'Forms types',
-      required: true,
-      readonly: true,
-      options: this.selectionOptions,
-      valueProp: (option: any) => option,
-      // compareWith: (o1: any, o2: any) => o1.value === o2.value,
-      change: this.onFormTypeChange.bind(this)
-
-    }
-  },
-    // {
-    //   key: 'address23',
-    //   wrappers: ['panel'],
-    //   templateOptions: { label: 'Address' },
-    //   fieldGroup: [{
-    //     key: 'town',
-    //     type: 'input',
-    //     templateOptions: {
-    //       required: true,
-    //       type: 'text',
-    //       label: 'Town',
-    //     },
-    //   }
-
-    //   ],
-    // },
-  ]
+  fields: FormlyFieldConfig[] = [];
+  selectionOptions$: BehaviorSubject<SelectionOption[]> = new BehaviorSubject<SelectionOption[]>([]);
 
 
   constructor(private dynamicFormsService: DynamicFormsService, private cd: ChangeDetectorRef) { }
 
 
   ngOnInit(): void {
+    this.fields.push(this.addStartupFormTypesPicker());
+
     this.dynamicFormsService.getFormsTypesFromServer().pipe(
       takeUntil(this.onDestroy$)).subscribe((options: SelectionOption[]) => {
-        this.selectionOptions.next(options);
+        this.selectionOptions$.next(options);
       })
+  }
+
+  //consider moving this function to a service
+  addStartupFormTypesPicker(): FormlyFieldConfig {
+    return {
+      key: 'FormsTypesSelection',
+      type: 'select',
+      focus: true,
+      // wrappers: ['panel'],
+      templateOptions: {
+        label: 'Forms types',
+        required: true,
+        readonly: true,
+        options: this.selectionOptions$,
+        valueProp: (option: any) => option,
+        // compareWith: (o1: any, o2: any) => o1.value === o2.value,
+        change: this.onFormTypeChange.bind(this)
+
+      }
+    }
   }
 
 
   onFormTypeChange(model: any, { value }: any) {
     this.fields = [this.fields[0]]; // reset form keep only form type selection;
-    this.dynamicFormsService.getFormDetails(value.value).subscribe((res: FormlyFieldConfig[]) => {
+    this.dynamicFormsService.getFormDetails(value.value).pipe(takeUntil(this.onDestroy$)).subscribe((res: FormlyFieldConfig[]) => {
       this.fields = [this.fields[0], ...res];
       this.cd.detectChanges();
     })

@@ -7,12 +7,14 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 
 @Injectable()
 export class DynamicFormsService {
-  ///links sould be in config/env file
+  ///links should be in config/env file
   serverBaseUrl = 'https://clarityapi.intelligo.ai/api/v1/schemas'
   formsTypesUrl = '/list';
   constructor(private http: HttpClient) {
 
   }
+
+
 
   getFormsTypesFromServer(): Observable<SelectionOption[]> {
     return this.http.get<FormsTypeSchema>(this.serverBaseUrl + this.formsTypesUrl).pipe(
@@ -42,11 +44,10 @@ export class DynamicFormsService {
         parsedDetails.push(nestedFiled)
         this.parseFromDetailsResFormServer(scheme[property] as ServerFromDetailsSchemaPropValue, nestedFiled.fieldGroup)
       }
-      else if (this.isStringifyRepresentationOfFieldDetails(scheme[property])) {
+      else if (this.isStringifyFieldDetails(scheme[property])) {
         const formDetails: FormlyFieldConfig = this.createFormlyFieldConfigFormServerSchema(property, scheme[property] as string);
         parsedDetails.push(formDetails);
       }
-
       else {
         throw Error(`a non supported field type was received for the server: type ${typeof scheme[property]} property ${property}`)
       }
@@ -55,12 +56,13 @@ export class DynamicFormsService {
     return parsedDetails;
   }
 
-
+  // there is probably a better way for this check (instanceOf or another typescript way)
   private isNestedFormDetails(propValue: string | Object) {
     return typeof propValue === 'object';
   }
 
-  private isStringifyRepresentationOfFieldDetails(propValue: string | Object) {
+
+  private isStringifyFieldDetails(propValue: string | Object) {
     return typeof propValue === 'string';
   }
 
@@ -100,6 +102,8 @@ export class DynamicFormsService {
 
     return res;
   }
+
+
 
   private convertServerEnumValuesToSelectionOptions(enumValues: string[] | undefined): SelectionOption[] | null {
     return enumValues ? enumValues.map((value: string) => ({ value, label: value })) : null;
