@@ -19,7 +19,7 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
   options: FormlyFormOptions = {};
   fields: FormlyFieldConfig[] = [];
   selectionOptions$: BehaviorSubject<SelectionOption[]> = new BehaviorSubject<SelectionOption[]>([]);
-
+  currentSelectedFormType: string = 'Main';
 
   constructor(private dynamicFormsService: DynamicFormsService, private cd: ChangeDetectorRef) { }
 
@@ -54,9 +54,10 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
   }
 
 
-  onFormTypeChange(model: any, { value }: any) {
+  onFormTypeChange(model: any, { value: selectedType }: any) {
+    this.currentSelectedFormType = selectedType.value;
     this.fields = [this.fields[0]]; // reset form keep only form type selection;
-    this.dynamicFormsService.getFormDetails(value.value).pipe(takeUntil(this.onDestroy$)).subscribe((res: FormlyFieldConfig[]) => {
+    this.dynamicFormsService.getFormDetails(selectedType.value).pipe(takeUntil(this.onDestroy$)).subscribe((res: FormlyFieldConfig[]) => {
       this.fields = [this.fields[0], ...res];
       this.cd.detectChanges();
     })
