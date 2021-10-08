@@ -11,12 +11,11 @@ export class DynamicFormsService {
 
   }
 
-  getFormsTypesFromServer(): Observable< any[]> {
+  getFormsTypesFromServer(): Observable<SelectionOption[]> {
     return this.http.get<FormsTypeSchema>(this.formsTypesUrl).pipe(
       map((response: FormsTypeSchema) => {
         return response.result.schemasList.map((fromType: SchemasList) => ({ value: fromType.display, label: fromType.display }))
-
-    }))
+      }))
 
   }
 }

@@ -1,10 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { DynamicFormsService } from './services/dynamic-forms.service';
-import { SelectionOption } from '../../../../../.history/src/app/features/dynamic-forms/dynamic-forms/services/types/dynamic-forms.types_20211008104515';
+import { SelectionOption } from './services/types/dynamic-forms.types';
 
 @Component({
   selector: 'app-dynamic-forms',
@@ -14,44 +14,34 @@ import { SelectionOption } from '../../../../../.history/src/app/features/dynami
 })
 export class DynamicFormsComponent implements OnInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject();
-  form = new FormGroup({});
+  form: FormGroup = new FormGroup({});
   model: any = {};
   options: FormlyFormOptions = {};
-  fields: BehaviorSubject<FormlyFieldConfig[]> = new BehaviorSubject<FormlyFieldConfig[]>([]);
+  selectionOptions: BehaviorSubject<SelectionOption[]> = new BehaviorSubject<SelectionOption[]>([]);
+
+  fields: FormlyFieldConfig[] = [{
+    key: 'FormsTypesSelection',
+    type: 'select',
+    focus: true,
+    templateOptions: {
+      label: 'Forms types',
+      required: true,
+      readonly: true,
+      options: this.selectionOptions,
+    }
+  }]
 
 
-  constructor(private dynamicFormsService: DynamicFormsService) { }
+  constructor(private dynamicFormsService: DynamicFormsService, private cd: ChangeDetectorRef) { }
 
 
   ngOnInit(): void {
     this.dynamicFormsService.getFormsTypesFromServer().pipe(
-
-
-      //         // options: [
-      //         //   { value: 1, label: 'Option 1' },
-      //         //   { value: 2, label: 'Option 2' },
-      //         //   { value: 3, label: 'Option 3' },
-      //         //   { value: 4, label: 'Option 4', disabled: true },
-      //         // ],
-      //       },
-
-      //     }])
-
-
       takeUntil(this.onDestroy$)).subscribe((options: SelectionOption[]) => {
-        this.fields.next([{
-          key: 'FormsTypesSelection',
-          type: 'select',
-          templateOptions: {
-            label: 'Forms types',
-            required: true,
-            readonly: true,
-            options
-          }
-        }
-        ])
+        this.selectionOptions.next(options);
       })
   }
+
 
 
 
