@@ -36,13 +36,13 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
   //consider moving this function to a service
   addStartupFormTypesPicker(): FormlyFieldConfig {
     return {
-      key: 'FormsTypesSelection',
+      key: 'formType',
       type: 'select',
       focus: true,
       // wrappers: ['panel'],
       templateOptions: {
         label: 'Forms types',
-        required: true,
+        required: false,
         readonly: true,
         options: this.selectionOptions$,
         valueProp: (option: any) => option,
@@ -56,9 +56,9 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
 
   onFormTypeChange(model: any, { value: selectedFromType }: any) {
     this.currentSelectedFormType = selectedFromType.value;
-    this.fields = [this.fields[0]]; // reset form keep only form type selection;
+    // this.fields = [this.fields[0]]; // reset form keep only form type selection;
     this.dynamicFormsService.getFormDetails(selectedFromType.value).pipe(takeUntil(this.onDestroy$)).subscribe((res: FormlyFieldConfig[]) => {
-      this.fields = [this.fields[0], ...res];
+      this.fields = [...this.fields, ...res];
       this.cd.detectChanges();
     })
 
@@ -66,7 +66,11 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
 
 
   submit() {
-    alert(JSON.stringify(this.model));
+    this.dynamicFormsService.submitFormToServer(this.model).subscribe(() => {
+
+    })
+
+
   }
 
   ngOnDestroy(): void {

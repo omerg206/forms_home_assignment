@@ -48,3 +48,9 @@ export enum ConvertServerFiledTypeToFormType {
   Enum = 'select',
   Boolean = 'checkbox'
 }
+
+/// can be made better with Generic types
+export interface SubmitDataToServer{
+  type: string,
+  form: object
+}

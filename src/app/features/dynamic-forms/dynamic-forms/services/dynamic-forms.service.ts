@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ConvertServerFiledTypeToFormType, FormsTypeSchema, FormPropertiesFromServer, SchemasList, SelectionOption, ServerFormDetailsResponse, ServerFromDetailsSchemaPropValue } from '../types/dynamic-forms.types';
+import { ConvertServerFiledTypeToFormType, FormsTypeSchema, FormPropertiesFromServer, SchemasList, SelectionOption, ServerFormDetailsResponse, ServerFromDetailsSchemaPropValue, SubmitDataToServer } from '../types/dynamic-forms.types';
 import { first, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -8,9 +8,24 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 @Injectable()
 export class DynamicFormsService {
   ///links should be in config/env file
-  serverBaseUrl = 'https://clarityapi.intelligo.ai/api/v1/schemas'
-  formsTypesUrl = '/list';
+  private serverBaseUrl = 'https://clarityapi.intelligo.ai/api/v1/schemas'
+  private formsTypesUrl = '/list';
+  private formsSubmitUrl = '/submit';
   constructor(private http: HttpClient) {
+
+  }
+
+
+  submitFormToServer(model: any): Observable<any> {
+    const { formType, ...fromData } = model;
+    const dataToServer: SubmitDataToServer = { type: formType.value, form: fromData };
+
+    return this.http.post<any>(this.serverBaseUrl + this.formsSubmitUrl, dataToServer).pipe(
+      first(),
+      map((response: any) => {
+        debugger
+        return 4
+      }))
 
   }
 
