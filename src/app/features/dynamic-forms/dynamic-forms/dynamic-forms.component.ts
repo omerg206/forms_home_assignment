@@ -23,11 +23,16 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
     key: 'FormsTypesSelection',
     type: 'select',
     focus: true,
+    wrappers: ['panel'],
     templateOptions: {
       label: 'Forms types',
       required: true,
       readonly: true,
       options: this.selectionOptions,
+      valueProp: (option: any) => option,
+      // compareWith: (o1: any, o2: any) => o1.value === o2.value,
+      change: this.onFormTypeChange.bind(this)
+
     }
   }]
 
@@ -43,7 +48,15 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
   }
 
 
+  onFormTypeChange(model: any, { value }: any) {
 
+    this.dynamicFormsService.getFormDetails(value.value).subscribe()
+  }
+
+
+  submit() {
+    alert(JSON.stringify(this.model));
+  }
 
   ngOnDestroy(): void {
     this.onDestroy$.next();

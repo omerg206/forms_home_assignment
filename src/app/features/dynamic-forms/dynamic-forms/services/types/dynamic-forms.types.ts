@@ -10,11 +10,41 @@ export interface Result {
 }
 
 export interface SchemasList {
-  type:    string;
+  type: string;
   display: string;
 }
 
 export interface SelectionOption {
-   value: string, label: string
+  value: string, label: string
+}
+
+export interface FormDetails {
+  [key: string]: FormEnum | FormType | FormDetails
+}
+
+export interface FormEnum {
+  type: 'Enum';
+  enumValues: string[]
+}
+
+export interface FormType {
+  type: 'String' | 'Date' ;
+  require?: boolean;
+}
+
+export interface FormTypeEnum {
+  type: 'Enum';
+  enumValues: string[];
+  require?: boolean;
+}
+
+export interface ServerFromDetailsSchemaPropValue {
+  [key: string]: string | ServerFromDetailsSchemaPropValue
+}
+
+export interface ServerFormDetailsResponse {
+  succeeded: boolean;
+  result: { scheme: ServerFromDetailsSchemaPropValue }
+
 }
 
