@@ -3,6 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DynamicFormsModule } from './features/dynamic-forms/dynamic-forms.module';
+
 
 @NgModule({
   declarations: [
@@ -10,7 +12,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    DynamicFormsModule,
+
+
   ],
   providers: [],
   bootstrap: [AppComponent]
