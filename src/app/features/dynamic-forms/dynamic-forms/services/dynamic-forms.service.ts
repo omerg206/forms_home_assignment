@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ConvertServerFiledTypeToFormType, FormDetails, FormEnum, FormsTypeSchema, FormType, SchemasList, SelectionOption, ServerFormDetailsResponse, ServerFromDetailsSchemaPropValue } from '../types/dynamic-forms.types';
+import { ConvertServerFiledTypeToFormType, FormsTypeSchema, FormPropertiesFromServer, SchemasList, SelectionOption, ServerFormDetailsResponse, ServerFromDetailsSchemaPropValue } from '../types/dynamic-forms.types';
 import { first, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -76,7 +76,7 @@ export class DynamicFormsService {
 
 
   private createFormlyFieldConfigFormServerSchema(propName: string, propValue: string): FormlyFieldConfig {
-    const parsedFiledDetails: FormEnum | FormType = JSON.parse(propValue as any);
+    const parsedFiledDetails: FormPropertiesFromServer = JSON.parse(propValue as any);
     let res = {};
     const type = ConvertServerFiledTypeToFormType[parsedFiledDetails.type];
 
@@ -92,7 +92,9 @@ export class DynamicFormsService {
         options: this.convertServerEnumValuesToSelectionOptions((parsedFiledDetails as any).enumValues),
         // placeholder: 'Placeholder',
         description: propName,
-        required: !!(parsedFiledDetails as FormType).require,
+        indeterminate: false, // angular martial  checkbox  defaults as indeterminate
+        required: !!parsedFiledDetails.require,
+        value: parsedFiledDetails.value
       }
     }
 

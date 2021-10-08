@@ -18,24 +18,19 @@ export interface SelectionOption {
   value: string, label: string
 }
 
-export interface FormDetails {
-  [key: string]: FormEnum | FormType | FormDetails
+export interface FormDetailsFromServer {
+  [key: string]: FormPropertiesFromServer | FormDetailsFromServer
 }
 
-export interface FormEnum {
-  type: 'Enum';
-  enumValues: string[]
-}
 
-export interface FormType {
-  type: 'String' | 'Date' | 'Enum';
+export interface FormPropertiesFromServer {
+  type: 'String' | 'Date' | 'Enum' | 'Boolean';
   require?: boolean;
+  enumValues?: string[];
+  value?: boolean;
 }
 
-export interface FormTypeEnum extends FormType {
-  enumValues: string[];
 
-}
 
 export interface ServerFromDetailsSchemaPropValue {
   [key: string]: string | ServerFromDetailsSchemaPropValue
@@ -47,8 +42,9 @@ export interface ServerFormDetailsResponse {
 
 }
 
-export  enum ConvertServerFiledTypeToFormType {
+export enum ConvertServerFiledTypeToFormType {
   String = 'input',
   Date = 'datepicker',
-  Enum = 'select'
+  Enum = 'select',
+  Boolean = 'checkbox'
 }
