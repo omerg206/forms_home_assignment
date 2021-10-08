@@ -54,13 +54,14 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
   }
 
 
-  onFormTypeChange(model: any, { value: selectedType }: any) {
-    this.currentSelectedFormType = selectedType.value;
+  onFormTypeChange(model: any, { value: selectedFromType }: any) {
+    this.currentSelectedFormType = selectedFromType.value;
     this.fields = [this.fields[0]]; // reset form keep only form type selection;
-    this.dynamicFormsService.getFormDetails(selectedType.value).pipe(takeUntil(this.onDestroy$)).subscribe((res: FormlyFieldConfig[]) => {
+    this.dynamicFormsService.getFormDetails(selectedFromType.value).pipe(takeUntil(this.onDestroy$)).subscribe((res: FormlyFieldConfig[]) => {
       this.fields = [this.fields[0], ...res];
       this.cd.detectChanges();
     })
+
   }
 
 
