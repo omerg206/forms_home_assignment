@@ -50,7 +50,7 @@ export enum ConvertServerFiledTypeToFormType {
 }
 
 /// can be made better with Generic types
-export interface SubmitDataToServer{
+export interface SubmitDataToServer {
   type: string,
   form: object
 }

@@ -39,6 +39,7 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
       key: 'formType',
       type: 'select',
       focus: true,
+
       // wrappers: ['panel'],
       templateOptions: {
         label: 'Forms types',

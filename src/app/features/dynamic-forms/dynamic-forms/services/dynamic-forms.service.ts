@@ -93,8 +93,8 @@ export class DynamicFormsService {
 
 
   private createFormlyFieldConfigFormServerSchema(propName: string, propValue: string): FormlyFieldConfig {
-    const parsedFiledDetails: FormPropertiesFromServer = JSON.parse(propValue as any);
-    let res = {};
+    const parsedFiledDetails: FormPropertiesFromServer = JSON.parse(propValue as string);
+    let res: FormlyFieldConfig = {};
     const type = ConvertServerFiledTypeToFormType[parsedFiledDetails.type];
 
     if (!type) {
@@ -105,10 +105,11 @@ export class DynamicFormsService {
       key: propName,
       type,
       templateOptions: {
-        label: propName,
+        label: propName.replace('_', ''),
         options: this.convertServerEnumValuesToSelectionOptions((parsedFiledDetails as any).enumValues),
+        readonly: true,
         // placeholder: 'Placeholder',
-        description: propName,
+        description: 'asd',
         indeterminate: false, // angular martial  checkbox  defaults as indeterminate
         required: !!parsedFiledDetails.require,
         value: parsedFiledDetails.value
@@ -120,8 +121,8 @@ export class DynamicFormsService {
 
 
 
-  private convertServerEnumValuesToSelectionOptions(enumValues: string[] | undefined): SelectionOption[] | null {
-    return enumValues ? enumValues.map((value: string) => ({ value, label: value })) : null;
+  private convertServerEnumValuesToSelectionOptions(enumValues: string[] | undefined): SelectionOption[] {
+    return enumValues ? enumValues.map((value: string) => ({ value, label: value })) : [];
   }
 
 }
