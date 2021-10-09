@@ -47,6 +47,7 @@ export class DynamicFormsService {
     return this.http.get<FormsTypeSchema>(this.serverBaseUrl + this.formsTypesUrl).pipe(
       first(),
       map((response: FormsTypeSchema) => {
+
         return response.result.schemasList.map((fromType: SchemasList) => this.createSelectionObject(fromType.display))
       }))
 
@@ -56,9 +57,8 @@ export class DynamicFormsService {
   getFormDetails(formType: string): Observable<FormlyFieldConfig[]> {
     return this.http.get<ServerFormDetailsResponse>(this.serverBaseUrl + `/${formType}`).pipe(first(),
       map((response: ServerFormDetailsResponse) => {
-        const params = { scheme: response.result.scheme as ServerFromDetailsSchemaPropValue, groupName: formType, currentLevel: 0, parsedDetails: [] };
+        const params = { scheme: response.result.scheme as ServerFromDetailsSchemaPropValue, groupName: formType, currentParsedDetails: [], parsedDetails: [] };
         return this.parseFromDetailsResFormServer(params)
-          .filter((res: FormlyFieldConfig) => res.fieldGroup!.length > 0); //there is a bug in the parsing function recursion.
       }))
   }
 
@@ -100,17 +100,23 @@ export class DynamicFormsService {
    * maybe the recursive function should be promised based in case the object is deeply nested.
    *  maybe the function should be irritative
    */
-  private parseFromDetailsResFormServer({ scheme, parsedDetails = [], currentLevel = 0, groupName }: ParseSchemaFormServerParams): FormlyFieldConfig[] {
+  private parseFromDetailsResFormServer({ scheme, parsedDetails = [], currentParsedDetails = [], groupName }: ParseSchemaFormServerParams): FormlyFieldConfig[] {
+    if (parsedDetails.length === 0) {
+      currentParsedDetails = parsedDetails;
+    }
+
     for (const property in scheme) {
       if (this.isNestedFormDetails(scheme[property])) {
         const nestedScheme = scheme[property] as ServerFromDetailsSchemaPropValue;
-        this.parseFromDetailsResFormServer({ parsedDetails, currentLevel: currentLevel + 1, groupName: property, scheme: nestedScheme })
+        parsedDetails.push({ fieldGroup: [], templateOptions: { label: this.normalizeStrings(property) } });
+
+        this.parseFromDetailsResFormServer({ parsedDetails, currentParsedDetails: parsedDetails[parsedDetails.length - 1].fieldGroup!, groupName: property, scheme: nestedScheme })
       }
 
       else if (this.isStringifyFieldDetails(scheme[property])) {
         const formDetails: FormlyFieldConfig = this.createFormlyFieldConfigFormServerSchema(property, scheme[property] as string);
 
-        this.addToCurrentFiledGroup(formDetails, groupName, parsedDetails, currentLevel);
+        this.addToCurrentFiledGroup(formDetails, groupName, currentParsedDetails);
       }
       else {
         throw Error(`a non supported field type was received for the server: type ${typeof scheme[property]} property ${property}`)
@@ -122,12 +128,12 @@ export class DynamicFormsService {
 
 
 
-  private addToCurrentFiledGroup(newFiled: FormlyFieldConfig, groupName: string, parsedDetails: FormlyFieldConfig[], currentLevel: number) {
-    if (!parsedDetails[currentLevel]) {
-      parsedDetails[currentLevel] = { fieldGroup: [], templateOptions: { label: this.normalizeStrings(groupName) } };
+  private addToCurrentFiledGroup(newFiled: FormlyFieldConfig, groupName: string, currentParsedDetails: FormlyFieldConfig[]) {
+    if (!currentParsedDetails[0]) {
+      currentParsedDetails[0] = { fieldGroup: [], templateOptions: { label: this.normalizeStrings(groupName) } };
     }
 
-    parsedDetails[currentLevel].fieldGroup!.push(newFiled);
+    currentParsedDetails[0]!.fieldGroup!.push(newFiled);
 
   }
 

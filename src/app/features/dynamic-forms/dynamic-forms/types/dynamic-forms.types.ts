@@ -64,7 +64,8 @@ export interface ParseSchemaFormServerParams {
   scheme: ServerFromDetailsSchemaPropValue
   groupName: string,
   parsedDetails: FormlyFieldConfig[] ;
-   currentLevel: number;
+   currentParsedDetails: FormlyFieldConfig[];
+
 }
 
 
