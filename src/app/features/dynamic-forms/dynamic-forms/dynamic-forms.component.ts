@@ -49,6 +49,7 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
   }
 
   updateFormFields(newFields: FormlyFieldConfig[]) {
+    debugger
     this.fields[0].fieldGroup = this.fields[0].fieldGroup?.concat(newFields);
     this.formFiledsRefChangeToTriggerChangeDetectin();
   }

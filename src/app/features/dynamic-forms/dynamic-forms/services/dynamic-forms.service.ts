@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { FormsTypeSchema, FormPropertiesFromServer, SchemasList, SelectionOption, ServerFormDetailsResponse, ServerFromDetailsSchemaPropValue, SubmitDataToServer, AllInputFieldDefaultOptions, DefaultFormFiledOptions } from '../types/dynamic-forms.types';
+import { FormsTypeSchema, FormPropertiesFromServer, SchemasList, SelectionOption, ServerFormDetailsResponse, ServerFromDetailsSchemaPropValue, SubmitDataToServer, AllInputFieldDefaultOptions, DefaultFormFiledOptions, ParseSchemaFormServerParams } from '../types/dynamic-forms.types';
 import { first, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { FormlyFieldConfig, FormlyTemplateOptions } from '@ngx-formly/core';
@@ -55,7 +55,9 @@ export class DynamicFormsService {
   getFormDetails(formType: string): Observable<FormlyFieldConfig[]> {
     return this.http.get<ServerFormDetailsResponse>(this.serverBaseUrl + `/${formType}`).pipe(first(),
       map((response: ServerFormDetailsResponse) => {
-        return this.parseFromDetailsResFormServer(response.result.scheme);
+        const params = { scheme: response.result.scheme as ServerFromDetailsSchemaPropValue, groupName: formType, currentLevel: 0, parsedDetails: [] };
+        return this.parseFromDetailsResFormServer(params)
+          .filter((res: FormlyFieldConfig) => res.fieldGroup!.length > 0); //there is a bug in the parsing function recursion.
       }))
   }
 
@@ -97,16 +99,17 @@ export class DynamicFormsService {
    * maybe the recursive function should be promised based in case the object is deeply nested.
    *  maybe the function should be irritative
    */
-  private parseFromDetailsResFormServer(scheme: ServerFromDetailsSchemaPropValue, parsedDetails: FormlyFieldConfig[] = []): FormlyFieldConfig[] {
+  private parseFromDetailsResFormServer({ scheme, parsedDetails = [], currentLevel = 0, groupName }: ParseSchemaFormServerParams): FormlyFieldConfig[] {
     for (const property in scheme) {
       if (this.isNestedFormDetails(scheme[property])) {
-        const nestedFiled: FormlyFieldConfig = this.createNestedFormFields(property);
-        parsedDetails.push(nestedFiled)
-        this.parseFromDetailsResFormServer(scheme[property] as ServerFromDetailsSchemaPropValue, nestedFiled.fieldGroup)
+        const nestedScheme = scheme[property] as ServerFromDetailsSchemaPropValue;
+        this.parseFromDetailsResFormServer({ parsedDetails, currentLevel: currentLevel + 1, groupName, scheme: nestedScheme })
       }
+
       else if (this.isStringifyFieldDetails(scheme[property])) {
         const formDetails: FormlyFieldConfig = this.createFormlyFieldConfigFormServerSchema(property, scheme[property] as string);
-        parsedDetails.push(formDetails);
+
+        this.addToCurrentFiledGroup(formDetails, groupName, parsedDetails, currentLevel);
       }
       else {
         throw Error(`a non supported field type was received for the server: type ${typeof scheme[property]} property ${property}`)
@@ -115,6 +118,19 @@ export class DynamicFormsService {
     }
     return parsedDetails;
   }
+
+
+
+  private addToCurrentFiledGroup(newFiled: FormlyFieldConfig, groupName: string, parsedDetails: FormlyFieldConfig[], currentLevel: number) {
+    if (!parsedDetails[currentLevel]) {
+      parsedDetails[currentLevel] = { fieldGroup: [], templateOptions: { label: this.normalizeStrings(groupName) } };
+    }
+
+    parsedDetails[currentLevel].fieldGroup!.push(newFiled);
+
+  }
+
+
 
   // there is probably a better way for this check (instanceOf or another typescript way)
   private isNestedFormDetails(propValue: string | Object) {
