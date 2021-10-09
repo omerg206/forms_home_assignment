@@ -4,7 +4,6 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { DynamicFormsService } from './services/dynamic-forms.service';
-import { SelectionOption } from './types/dynamic-forms.types';
 
 @Component({
   selector: 'app-dynamic-forms',
@@ -14,6 +13,7 @@ import { SelectionOption } from './types/dynamic-forms.types';
 })
 export class DynamicFormsComponent implements OnInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject();
+  private readonly formTypesSelectKey: string = 'formType';
   form: FormGroup = new FormGroup({});
   model: any = {};
   options: FormlyFormOptions = {};
@@ -24,35 +24,14 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.fields.push(this.addStartupFormTypesPicker());
-  }
-
-  //consider moving this function to a service
-  addStartupFormTypesPicker(): FormlyFieldConfig {
-    return {
-      key: 'formType',
-      type: 'select',
-      focus: true,
-
-
-      // wrappers: ['panel'],
-      templateOptions: {
-        label: 'Forms types',
-        required: false,
-        readonly: true,
-        options: this.dynamicFormsService.getFormsTypesFromServer(),
-        valueProp: (option: any) => option.value,
-        // compareWith: (o1: any, o2: any) => o1.value === o2.value,
-        change: this.onFormTypeChange.bind(this)
-
-      }
-    }
+    const formsTypeFiled = this.dynamicFormsService.createFormTypesFiled(this.formTypesSelectKey, this.onFormTypeChange.bind(this))
+    this.fields.push(formsTypeFiled);
   }
 
 
   onFormTypeChange(model: any, selectedFromType: any) {
     this.currentSelectedFormType = selectedFromType.value;
-    this.model = { formType: this.currentSelectedFormType };
+    this.model = { [this.formTypesSelectKey]: this.currentSelectedFormType };
     this.fields = [this.fields[0]];   // reset form keep only form type selection;
 
     this.dynamicFormsService.getFormDetails(this.currentSelectedFormType).pipe(takeUntil(this.onDestroy$)).subscribe((res: FormlyFieldConfig[]) => {
