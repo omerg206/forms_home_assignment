@@ -29,8 +29,8 @@ export class DynamicFormsService {
 
   submitFormToServer(model: any): Observable<any> {
     const { formType, ...fromData } = model;
-    const dataToServer: SubmitDataToServer = { type: formType.value, form: fromData };
-
+    const dataToServer: SubmitDataToServer = { type: formType, form: fromData };
+    debugger
     return this.http.post<any>(this.serverBaseUrl + this.formsSubmitUrl, dataToServer).pipe(
       first(),
       map((response: any) => {
