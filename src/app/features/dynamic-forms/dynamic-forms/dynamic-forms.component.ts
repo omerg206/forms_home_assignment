@@ -14,10 +14,16 @@ import { DynamicFormsService } from './services/dynamic-forms.service';
 export class DynamicFormsComponent implements OnInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject();
   private readonly formTypesSelectKey: string = 'formType';
+
+  isSubmitted: boolean = false;
   form: FormGroup = new FormGroup({});
   model: any = {};
   options: FormlyFormOptions = {};
-  fields: FormlyFieldConfig[] = [];
+  fields: FormlyFieldConfig[] = [{
+    type: 'stepper',
+    fieldGroup: []
+  }]
+
   currentSelectedFormType: string = 'Main';
 
   constructor(private dynamicFormsService: DynamicFormsService, private cd: ChangeDetectorRef) { }
@@ -25,29 +31,41 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const formsTypeFiled = this.dynamicFormsService.createFormTypesFiled(this.formTypesSelectKey, this.onFormTypeChange.bind(this))
-    this.fields.push(formsTypeFiled);
+    this.fields[0].fieldGroup?.push((formsTypeFiled));
   }
 
 
   onFormTypeChange(model: any, selectedFromType: any) {
     this.currentSelectedFormType = selectedFromType.value;
     this.model = { [this.formTypesSelectKey]: this.currentSelectedFormType };
-    this.fields = [this.fields[0]];   // reset form keep only form type selection;
+    // reset form keep only form type selection;
+    this.removeAllNonFormTypeFields();
 
     this.dynamicFormsService.getFormDetails(this.currentSelectedFormType).pipe(takeUntil(this.onDestroy$)).subscribe((res: FormlyFieldConfig[]) => {
-      this.fields = [...this.fields, ...res];
+      this.updateFormFields(res);
       this.cd.detectChanges();
     })
 
   }
 
+  updateFormFields(newFields: FormlyFieldConfig[]) {
+    this.fields[0].fieldGroup = this.fields[0].fieldGroup?.concat(newFields);
+    this.formFiledsRefChangeToTriggerChangeDetectin();
+  }
+
+  removeAllNonFormTypeFields() {
+    this.fields[0].fieldGroup = [(this.fields[0] as any).fieldGroup[0]];
+    this.formFiledsRefChangeToTriggerChangeDetectin();
+  }
+
+  formFiledsRefChangeToTriggerChangeDetectin() {
+    this.fields = [...this.fields];
+  }
+
 
   submit() {
     this.dynamicFormsService.submitFormToServer(this.model).subscribe(() => {
-
     })
-
-
   }
 
   ngOnDestroy(): void {

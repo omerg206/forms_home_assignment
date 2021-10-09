@@ -1,4 +1,4 @@
-import { PanelWrapperComponent } from './dynamic-forms/form-wrappers/panel-wrapper.components';
+import { PanelWrapperComponent } from './dynamic-forms/form-wrappers/panel-wrapper.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DynamicFormsComponent } from './dynamic-forms/dynamic-forms.component';
@@ -9,6 +9,8 @@ import { DynamicFormsService } from './dynamic-forms/services/dynamic-forms.serv
 import { HttpClientModule } from '@angular/common/http';
 import { FormlyMatDatepickerModule } from '@ngx-formly/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatStepperModule } from '@angular/material/stepper';
+import { FormlyFieldStepper } from './dynamic-forms/form-wrappers/stepper-wrapper.component';
 export function requiredMessage(err: any, field: FormlyFieldConfig) {
   return `${field.key} is required`;
 }
@@ -17,15 +19,19 @@ export function requiredMessage(err: any, field: FormlyFieldConfig) {
 @NgModule({
   declarations: [
     DynamicFormsComponent,
-
+    FormlyFieldStepper,
   ],
   imports: [
     CommonModule,
     FormsModule, ReactiveFormsModule,
     FormlyMatDatepickerModule,
     MatNativeDateModule,
+    MatStepperModule,
     FormlyModule.forRoot({
       validationMessages: [{ name: 'required', message: requiredMessage }],
+      types: [
+        { name: 'stepper', component: FormlyFieldStepper, wrappers: [] },
+      ],
       wrappers: [
         { name: 'panel', component: PanelWrapperComponent },
       ], extras: { lazyRender: true }

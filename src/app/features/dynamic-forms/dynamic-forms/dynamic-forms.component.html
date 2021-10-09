@@ -1,5 +1,3 @@
-
-<h1 class="form-title">{{currentSelectedFormType}}</h1>
 <form [formGroup]="form" (ngSubmit)="submit()">
   <formly-form
     [model]="model"
@@ -7,11 +5,4 @@
     [options]="options"
     [form]="form"
   ></formly-form>
-  <button
-    type="submit"
-    class="btn btn-primary submit-button"
-    [disabled]="!form.valid"
-  >
-    Submit
-  </button>
 </form>
