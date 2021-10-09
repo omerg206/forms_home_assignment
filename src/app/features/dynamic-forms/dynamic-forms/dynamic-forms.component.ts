@@ -34,13 +34,14 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
       type: 'select',
       focus: true,
 
+
       // wrappers: ['panel'],
       templateOptions: {
         label: 'Forms types',
         required: false,
         readonly: true,
         options: this.dynamicFormsService.getFormsTypesFromServer(),
-        valueProp: (option: any) => option,
+        valueProp: (option: any) => option.value,
         // compareWith: (o1: any, o2: any) => o1.value === o2.value,
         change: this.onFormTypeChange.bind(this)
 
@@ -49,12 +50,12 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
   }
 
 
-  onFormTypeChange(model: any, { value: selectedFromType }: any) {
+  onFormTypeChange(model: any, selectedFromType: any) {
     this.currentSelectedFormType = selectedFromType.value;
-    this.fields = [this.fields[0]];
-    this.fields[0].defaultValue = this.currentSelectedFormType;
-    // reset form keep only form type selection;
-    this.dynamicFormsService.getFormDetails(selectedFromType.value).pipe(takeUntil(this.onDestroy$)).subscribe((res: FormlyFieldConfig[]) => {
+    this.model = { formType: this.currentSelectedFormType };
+    this.fields = [this.fields[0]];   // reset form keep only form type selection;
+
+    this.dynamicFormsService.getFormDetails(this.currentSelectedFormType).pipe(takeUntil(this.onDestroy$)).subscribe((res: FormlyFieldConfig[]) => {
       this.fields = [...this.fields, ...res];
       this.cd.detectChanges();
     })
