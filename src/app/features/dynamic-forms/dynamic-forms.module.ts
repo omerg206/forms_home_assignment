@@ -11,6 +11,8 @@ import { FormlyMatDatepickerModule } from '@ngx-formly/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatStepperModule } from '@angular/material/stepper';
 import { FormlyFieldStepper } from './dynamic-forms/form-wrappers/stepper-wrapper.component';
+import { IsformsValidPipe } from './pipes/isforms-valid/isforms-valid.pipe';
+import { SubmittedService } from './dynamic-forms/services/submitted.service';
 export function requiredMessage(err: any, field: FormlyFieldConfig) {
   return `${field.key} is required`;
 }
@@ -20,6 +22,7 @@ export function requiredMessage(err: any, field: FormlyFieldConfig) {
   declarations: [
     DynamicFormsComponent,
     FormlyFieldStepper,
+    IsformsValidPipe,
   ],
   imports: [
     CommonModule,

@@ -4,6 +4,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { DynamicFormsService } from './services/dynamic-forms.service';
+import { SubmittedService } from './services/submitted.service';
 
 @Component({
   selector: 'app-dynamic-forms',
@@ -26,7 +27,7 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
 
   currentSelectedFormType: string = 'Main';
 
-  constructor(private dynamicFormsService: DynamicFormsService, private cd: ChangeDetectorRef) { }
+  constructor(private dynamicFormsService: DynamicFormsService, public submittedService: SubmittedService, private cd: ChangeDetectorRef) { }
 
 
   ngOnInit(): void {
@@ -49,14 +50,16 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
   }
 
   updateFormFields(newFields: FormlyFieldConfig[]) {
-    debugger
+
     this.fields[0].fieldGroup = this.fields[0].fieldGroup?.concat(newFields);
+    debugger
     this.formFiledsRefChangeToTriggerChangeDetectin();
   }
 
   removeAllNonFormTypeFields() {
     this.fields[0].fieldGroup = [(this.fields[0] as any).fieldGroup[0]];
     this.formFiledsRefChangeToTriggerChangeDetectin();
+    this.submittedService.isSubmitted.next(false);
   }
 
   formFiledsRefChangeToTriggerChangeDetectin() {
@@ -65,7 +68,9 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
 
 
   submit() {
-    this.dynamicFormsService.submitFormToServer(this.model).subscribe(() => {
+    this.dynamicFormsService.submitFormToServer(this.model).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
+      this.submittedService.isSubmitted.next(true);
+      alert('from submitted')
     })
   }
 

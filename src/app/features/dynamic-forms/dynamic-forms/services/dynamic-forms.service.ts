@@ -30,13 +30,14 @@ export class DynamicFormsService {
   submitFormToServer(model: any): Observable<any> {
     const { formType, ...fromData } = model;
     const dataToServer: SubmitDataToServer = { type: formType, form: fromData };
-    debugger
+
     return this.http.post<any>(this.serverBaseUrl + this.formsSubmitUrl, dataToServer).pipe(
       first(),
-      map((response: any) => {
-        debugger
-        return 4
-      }))
+      // map((response: any) => {
+
+      //   return 4
+      // })
+    )
 
   }
 
@@ -103,7 +104,7 @@ export class DynamicFormsService {
     for (const property in scheme) {
       if (this.isNestedFormDetails(scheme[property])) {
         const nestedScheme = scheme[property] as ServerFromDetailsSchemaPropValue;
-        this.parseFromDetailsResFormServer({ parsedDetails, currentLevel: currentLevel + 1, groupName, scheme: nestedScheme })
+        this.parseFromDetailsResFormServer({ parsedDetails, currentLevel: currentLevel + 1, groupName: property, scheme: nestedScheme })
       }
 
       else if (this.isStringifyFieldDetails(scheme[property])) {
