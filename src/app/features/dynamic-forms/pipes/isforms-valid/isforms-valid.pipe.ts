@@ -6,20 +6,11 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 })
 export class IsformsValidPipe implements PipeTransform {
 
-  transform(field: FormlyFieldConfig): boolean {
-
-    if (!field.fieldGroup) {
-      return this.isFormVaild(field);
-    }
-
-
-
-    return field.fieldGroup.every(f => this.isFormVaild(f));
+  transform(formGroupStatus: 'VALID' | 'INVALID'): boolean {
+   return formGroupStatus === 'VALID'
   }
 
-  isFormVaild(field: FormlyFieldConfig) {
-    return !field.formControl?.errors;
-  }
+
 
 }
 

@@ -78,9 +78,9 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
 
   submit() {
     this.formsStoreService.setFormSubmitted({isSubmittingInProgress: true, isSubmitFail: false, isSubmitSuccess: false});
-
     this.dynamicFormsService.submitFormToServer(this.model).pipe(takeUntil(this.onDestroy$))
     .subscribe(() => {
+
       this.formsStoreService.setFormSubmitted({isSubmittingInProgress: false, isSubmitSuccess: true, isSubmitFail: false});
       // this.fields.
       alert('from submitted')
