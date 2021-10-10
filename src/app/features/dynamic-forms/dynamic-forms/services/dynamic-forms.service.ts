@@ -88,7 +88,7 @@ export class DynamicFormsService {
       type: defaultsFiledOptions.type,
       templateOptions: {
         label: normalizePropName,
-        description: normalizePropName,
+        // description: normalizePropName,
         indeterminate: false,    // angular martial  checkbox  defaults as indeterminate
         ...defaultsFiledOptions.templateOptions,
       }

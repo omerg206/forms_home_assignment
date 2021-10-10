@@ -9,20 +9,20 @@
     <formly-field [field]="step"></formly-field>
 
     <div>
-      <button matStepperPrevious *ngIf="index !== 0"
-        class="btn btn-primary"
+      <button matStepperPrevious *ngIf="index !== 0" mat-button
+        class=""
         type="button">
         Back
       </button>
 
-      <button matStepperNext *ngIf="!last"
-        class="btn btn-primary" type="button"
+      <button matStepperNext *ngIf="!last" mat-button
+        class="" type="button"
 
         >
         Next
       </button>
 
-      <button *ngIf="last && index > 0" class="submit-success"
+      <button mat-button  *ngIf="last && index > 0" class="submit-success"
         [disabled]="!form.valid ||  formSubmitState.isSubmittingInProgress"
         [ngClass]="{'submit-success': formSubmitState.isSubmitSuccess,
         'submit-fail':    formSubmitState.isSubmitFail}"

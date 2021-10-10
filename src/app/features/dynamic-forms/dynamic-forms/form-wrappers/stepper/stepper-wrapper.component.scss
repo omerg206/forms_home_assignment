@@ -1,8 +1,9 @@
 // @import 'variables';
 
-.stepper-label-container{
-
-}
+// button{
+//   background-color: #007bff ;
+//   color:  white;
+// }
 
 // $clr-submitted-fail: #ff4444;
 .submit-success{
@@ -11,5 +12,9 @@
 
 .submit-fail{
   background-color: #ff4444;
+}
+
+.mat-button-disabled{
+  color: white;
 }
 

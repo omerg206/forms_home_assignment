@@ -13,6 +13,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { IsformsValidPipe } from './pipes/isforms-valid/isforms-valid.pipe';
 import { FormlyFieldStepper } from './dynamic-forms/form-wrappers/stepper/stepper-wrapper.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatButtonModule} from '@angular/material/button';
 
 
 export function requiredMessage(err: any, field: FormlyFieldConfig) {
@@ -33,6 +34,7 @@ export function requiredMessage(err: any, field: FormlyFieldConfig) {
     MatNativeDateModule,
     MatStepperModule,
     MatProgressSpinnerModule,
+    MatButtonModule,
     FormlyModule.forRoot({
       validationMessages: [{ name: 'required', message: requiredMessage }],
       types: [
