@@ -1,12 +1,14 @@
-<mat-stepper orientation="vertical">
+<mat-horizontal-stepper labelPosition="bottom">
   <mat-step
     *ngFor="let step of field.fieldGroup; let index = index; let last = last;">
-    <div class="stepper-label-container"> <ng-template matStepLabel >{{ step.templateOptions?.label }}
-      <div *ngIf="isLoadingFormData$ | async ">loading...</div>
-
+    <div class="stepper-label-container">
+       <ng-template matStepLabel ><span class="stepper-text">{{ step.templateOptions?.label }}</span>
+      <div *ngIf="getDateFromServerState.isDataFetchingInProgress">loading...</div>
     </ng-template></div>
 
-    <formly-field [field]="step"></formly-field>
+  <mat-card><formly-field [field]="step"></formly-field></mat-card>
+
+    <!-- <div class="error-fetching-data" *ngIf="getDateFromServerState.isError">error getting data fro server </div> -->
 
     <div>
       <button matStepperPrevious *ngIf="index !== 0" mat-button
@@ -31,4 +33,4 @@
       </button>
     </div>
   </mat-step>
-</mat-stepper>
+</mat-horizontal-stepper>

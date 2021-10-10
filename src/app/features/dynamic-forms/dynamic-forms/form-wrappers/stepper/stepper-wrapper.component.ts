@@ -3,9 +3,15 @@ import { ChangeDetectionStrategy, Component, OnInit, OnDestroy } from '@angular/
 import { FieldType, FormlyFieldConfig } from '@ngx-formly/core';
 import { Observable } from 'rxjs';
 import { debounce, debounceTime, takeUntil } from 'rxjs/operators';
-import { FormSubmissionState } from '../../types/dynamic-forms.types';
+import { FormSubmissionState, GetDateFromServerState } from '../../types/dynamic-forms.types';
 import { Subject } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
+import { FormControl, ValidationErrors } from '@angular/forms';
+
+
+export function getFormDetailsValidator(control: FormControl, field: FormlyFieldConfig, options = {}): ValidationErrors {
+  return { 'date-future': { message: `Validator options: ${JSON.stringify(options)}` } };
+}
 
 @Component({
   selector: 'formly-field-stepper',
@@ -18,7 +24,7 @@ import { ChangeDetectorRef } from '@angular/core';
 
 export class FormlyFieldStepper extends FieldType implements OnInit, OnDestroy {
    formSubmitState!: FormSubmissionState;
-   isLoadingFormData$!: Observable<boolean>;
+   getDateFromServerState!: GetDateFromServerState;
    private onDestroy$: Subject<void> = new Subject();
 
 
@@ -29,12 +35,21 @@ export class FormlyFieldStepper extends FieldType implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    this.isLoadingFormData$ = this.formsStoreService.isGettingFormDataServerChanges().pipe(debounceTime(500));
 
-    this.formsStoreService.formSubmittedChanges().pipe(takeUntil(this.onDestroy$)).subscribe((state: FormSubmissionState) => {
+
+     this.formsStoreService.gettingFormDataServerChanges().pipe(debounceTime(500), (takeUntil(this.onDestroy$)))
+     .subscribe((state: GetDateFromServerState) => {
+      this.getDateFromServerState = state;
+      this.cd.detectChanges()
+     })
+
+    this.formsStoreService.formSubmittedChanges().pipe().subscribe((state: FormSubmissionState) => {
       this.formSubmitState = state;
       this.cd.detectChanges()
     })
+
+
+
   }
 
   isValid(field: FormlyFieldConfig,): boolean {

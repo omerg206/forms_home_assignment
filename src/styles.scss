@@ -1,7 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 // @import 'variables'
 // @import "@angular/material/prebuilt-themes/indigo-pink.css";
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 *,
 *::after,
 *::before {
@@ -11,17 +10,29 @@
 html,
 body {
   height: 100%;
-}
-body {
+
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 :root{
-  --a: 'red'
+
 }
 
+.mat-horizontal-content-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex-direction: column;
+}
 
+.mat-horizontal-stepper-content {
+  width: clamp(30%,50%,70%);
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+}
 
 // .mat-step-label {
 //   min-width: 0 !important;

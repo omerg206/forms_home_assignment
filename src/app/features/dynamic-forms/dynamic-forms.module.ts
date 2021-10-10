@@ -14,6 +14,7 @@ import { IsformsValidPipe } from './pipes/isforms-valid/isforms-valid.pipe';
 import { FormlyFieldStepper } from './dynamic-forms/form-wrappers/stepper/stepper-wrapper.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
 
 
 export function requiredMessage(err: any, field: FormlyFieldConfig) {
@@ -35,6 +36,7 @@ export function requiredMessage(err: any, field: FormlyFieldConfig) {
     MatStepperModule,
     MatProgressSpinnerModule,
     MatButtonModule,
+    MatCardModule,
     FormlyModule.forRoot({
       validationMessages: [{ name: 'required', message: requiredMessage }],
       types: [

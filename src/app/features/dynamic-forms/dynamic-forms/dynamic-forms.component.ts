@@ -39,19 +39,19 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
   onFormTypeChange(model: any, selectedFromType: any) {
     this.currentSelectedFormType = selectedFromType.value;
     this.model = { [this.formTypesSelectKey]: this.currentSelectedFormType };
+
     // reset form keep only form type selection;
     this.removeAllNonFormTypeFields();
 
-
     this.dynamicFormsService.getFormDetails(this.currentSelectedFormType).pipe(
       takeUntil(this.onDestroy$)).subscribe((res: FormlyFieldConfig[]) => {
-      this.formsStoreService.setIsGettingFormDataServer(false);
+      this.formsStoreService.setGettingFormDataServer({isDataFetchingInProgress: false, isError: false});
       this.updateFormFields(res);
       this.cd.detectChanges();
 
     }, (error) => {
       console.log(`error getting data for ${this.currentSelectedFormType}`, error);
-      this.formsStoreService.setIsGettingFormDataServer(false);
+      this.formsStoreService.setGettingFormDataServer({isDataFetchingInProgress: false, isError: true});
     })
 
   }
@@ -66,8 +66,7 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
     this.fields[0].fieldGroup = [(this.fields[0] as any).fieldGroup[0]];
     this.form =  new FormGroup({});
     this.formFiledsRefChangeToTriggerChangeDetectin();
-    this.formsStoreService;
-    this.formsStoreService.setIsGettingFormDataServer(true);
+    this.formsStoreService.setGettingFormDataServer({isError: false, isDataFetchingInProgress: true});
     this.formsStoreService.setFormSubmitted({isSubmitFail: false, isSubmitSuccess: false, isSubmittingInProgress: false});
 
   }
@@ -80,7 +79,8 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
   submit() {
     this.formsStoreService.setFormSubmitted({isSubmittingInProgress: true, isSubmitFail: false, isSubmitSuccess: false});
 
-    this.dynamicFormsService.submitFormToServer(this.model).pipe(takeUntil(this.onDestroy$)).subscribe(() => {
+    this.dynamicFormsService.submitFormToServer(this.model).pipe(takeUntil(this.onDestroy$))
+    .subscribe(() => {
       this.formsStoreService.setFormSubmitted({isSubmittingInProgress: false, isSubmitSuccess: true, isSubmitFail: false});
       // this.fields.
       alert('from submitted')
@@ -88,7 +88,6 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
     (error) => {
       console.log(`error submitting  ${this.currentSelectedFormType}`, error);
       this.formsStoreService.setFormSubmitted({isSubmittingInProgress: false, isSubmitSuccess: false, isSubmitFail: true});
-
     })
   }
 

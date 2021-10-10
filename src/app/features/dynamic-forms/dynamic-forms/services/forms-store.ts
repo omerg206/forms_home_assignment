@@ -1,13 +1,12 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from 'rxjs';
-import { FormSubmissionState } from "../types/dynamic-forms.types";
+import { FormSubmissionState, GetDateFromServerState } from "../types/dynamic-forms.types";
 
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: 'platform' })
 export class FormsStoreService {
-  private _formSubmission: BehaviorSubject<FormSubmissionState> = new BehaviorSubject<FormSubmissionState>({isSubmittingInProgress: false, isSubmitSuccess: false, isSubmitFail: false});
-  private _isErrorSubmitted: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  private _isGettingFormDataServer: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+   private _formSubmission: BehaviorSubject<FormSubmissionState> = new BehaviorSubject<FormSubmissionState>({isSubmittingInProgress: false, isSubmitSuccess: false, isSubmitFail: false});
+  private _gettingFormDataServer: BehaviorSubject<GetDateFromServerState> = new BehaviorSubject<GetDateFromServerState>({isError: false, isDataFetchingInProgress: false});
 
   setFormSubmitted(param: Partial<FormSubmissionState>){
     this._formSubmission.next({...this._formSubmission.value, ...param});
@@ -17,21 +16,15 @@ export class FormsStoreService {
     return this._formSubmission.asObservable();
   }
 
-  setIsErrorSubmitted(isErrorSubmitted: boolean){
-    this._isErrorSubmitted.next(isErrorSubmitted);
+  setGettingFormDataServer(param: Partial<GetDateFromServerState>){
+    this._gettingFormDataServer.next({...this._gettingFormDataServer.value, ...param});
+  }
+  gettingFormDataServerChanges(): Observable<GetDateFromServerState>{
+
+    return this._gettingFormDataServer.asObservable();
   }
 
-  isErrorSubmittedChanges(): Observable<boolean>{
-    return this._isErrorSubmitted.asObservable();
-  }
 
-  setIsGettingFormDataServer(isGettingFormDataServer: boolean){
-    this._isGettingFormDataServer.next(isGettingFormDataServer);
-  }
-
-  isGettingFormDataServerChanges(): Observable<boolean>{
-    return this._isGettingFormDataServer.asObservable();
-  }
 
 
 }
