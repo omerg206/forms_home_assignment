@@ -1,15 +1,15 @@
-<mat-horizontal-stepper labelPosition="bottom"  #stepper>
-  <mat-step
+<mat-horizontal-stepper  labelPosition="bottom"  #stepper  errorMessage="Name is required.">
+  <mat-step [completed]="true"
     *ngFor="let step of field.fieldGroup; let index = index; let last = last;">
-    <div class="stepper-label-container">
+    <div class="stepper-label-container" >
        <ng-template matStepLabel ><span class="stepper-text">{{ step.templateOptions?.label }}</span>
-      <!-- <div *ngIf="getDateFromServerState.isDataFetchingInProgress">loading...</div> -->
+      <div *ngIf="getDateFromServerState?.isDataFetchingInProgress">loading...</div>
     </ng-template></div>
-<div>{{step!.formControl?.status}}</div>
-    <button (click)= "bla(step)" type="button">sad</button>
+
+
   <mat-card><formly-field [field]="step"></formly-field></mat-card>
 
-    <!-- <div class="error-fetching-data" *ngIf="getDateFromServerState.isError">error getting data fro server </div> -->
+    <div class="error-fetching-data" *ngIf="getDateFromServerState?.isError">error getting data fro server </div>
 
     <div class="buttons-container">
       <button matStepperPrevious *ngIf="index !== 0" mat-button

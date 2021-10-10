@@ -45,7 +45,7 @@ export class FormlyFieldStepper extends FieldType implements OnInit, OnDestroy {
       this.cd.detectChanges()
      })
 
-    this.formsStoreService.formSubmittedChanges().pipe().subscribe((state: FormSubmissionState) => {
+    this.formsStoreService.formSubmittedChanges().pipe(takeUntil(this.onDestroy$)).subscribe((state: FormSubmissionState) => {
       this.formSubmitState = state;
       this.cd.detectChanges()
     })

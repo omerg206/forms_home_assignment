@@ -59,19 +59,19 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
   updateFormFields(newFields: FormlyFieldConfig[]) {
 
     this.fields[0].fieldGroup = this.fields[0].fieldGroup?.concat(newFields);
-    this.formFiledsRefChangeToTriggerChangeDetectin();
+    this.formFiledsRefChangeToTriggerChangeDetection();
   }
 
   removeAllNonFormTypeFields() {
     this.fields[0].fieldGroup = [(this.fields[0] as any).fieldGroup[0]];
     this.form =  new FormGroup({});
-    this.formFiledsRefChangeToTriggerChangeDetectin();
+    this.formFiledsRefChangeToTriggerChangeDetection();
     this.formsStoreService.setGettingFormDataServer({isError: false, isDataFetchingInProgress: true});
     this.formsStoreService.setFormSubmitted({isSubmitFail: false, isSubmitSuccess: false, isSubmittingInProgress: false});
 
   }
 
-  formFiledsRefChangeToTriggerChangeDetectin() {
+  formFiledsRefChangeToTriggerChangeDetection() {
     this.fields = [...this.fields];
   }
 
