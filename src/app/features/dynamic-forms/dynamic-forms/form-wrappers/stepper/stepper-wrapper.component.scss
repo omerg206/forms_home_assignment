@@ -1,9 +1,22 @@
 // @import 'variables';
 
-// button{
-//   background-color: #007bff ;
-//   color:  white;
-// }
+.buttons-container {
+  padding-top: 1rem;
+  display: flex;
+  justify-content: space-between
+}
+button{
+  background-color: #3f51b5 ;
+  color:  white;
+}
+
+.next-button{
+  margin-left: auto;
+}
+
+button:last-of-type(){
+  margin-left: auto;
+}
 
 // $clr-submitted-fail: #ff4444;
 .submit-success{
@@ -14,8 +27,13 @@
   background-color: #ff4444;
 }
 
+// button {
+//   background-color: #3f51b5;
+// }
+
 .mat-button-disabled{
   color: white;
+  background-color: #cccccc;
 }
 
 .error-fetching-data{

@@ -10,7 +10,7 @@
 
     <!-- <div class="error-fetching-data" *ngIf="getDateFromServerState.isError">error getting data fro server </div> -->
 
-    <div>
+    <div class="buttons-container">
       <button matStepperPrevious *ngIf="index !== 0" mat-button
         class=""
         type="button">
@@ -18,7 +18,7 @@
       </button>
 
       <button matStepperNext *ngIf="!last" mat-button
-        class="" type="button"
+        class="next-button" type="button"
 
         >
         Next
