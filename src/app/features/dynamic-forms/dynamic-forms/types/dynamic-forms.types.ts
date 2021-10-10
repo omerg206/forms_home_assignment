@@ -68,6 +68,13 @@ export interface ParseSchemaFormServerParams {
 
 }
 
+export interface FormSubmissionState {
+  isSubmittingInProgress: boolean, isSubmitSuccess: boolean, isSubmitFail: boolean
+}
+
+export interface GetDateFromServerState {
+  isDataFetchingInProgress: boolean, isError: boolean,
+}
 
 
 /// can be made better with Generic types

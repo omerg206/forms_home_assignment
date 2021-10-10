@@ -5,8 +5,6 @@ import { first, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { FormlyFieldConfig, FormlyTemplateOptions } from '@ngx-formly/core';
 
-
-
 @Injectable()
 export class DynamicFormsService {
   ///links should be in config/env file and read using config service?
@@ -33,10 +31,6 @@ export class DynamicFormsService {
 
     return this.http.post<any>(this.serverBaseUrl + this.formsSubmitUrl, dataToServer).pipe(
       first(),
-      // map((response: any) => {
-
-      //   return 4
-      // })
     )
 
   }
@@ -88,7 +82,7 @@ export class DynamicFormsService {
       type: defaultsFiledOptions.type,
       templateOptions: {
         label: normalizePropName,
-        description: normalizePropName,
+        // description: normalizePropName,
         indeterminate: false,    // angular martial  checkbox  defaults as indeterminate
         ...defaultsFiledOptions.templateOptions,
       }
@@ -147,16 +141,6 @@ export class DynamicFormsService {
 
   private isStringifyFieldDetails(propValue: string | Object) {
     return typeof propValue === 'string';
-  }
-
-
-  private createNestedFormFields(propName: string): FormlyFieldConfig {
-    return {
-      key: propName,
-      wrappers: ['panel'],
-      templateOptions: { label: propName },
-      fieldGroup: [],
-    }
   }
 
 
