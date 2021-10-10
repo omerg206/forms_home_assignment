@@ -10,9 +10,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormlyMatDatepickerModule } from '@ngx-formly/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatStepperModule } from '@angular/material/stepper';
-import { FormlyFieldStepper } from './dynamic-forms/form-wrappers/stepper-wrapper.component';
 import { IsformsValidPipe } from './pipes/isforms-valid/isforms-valid.pipe';
-import { SubmittedService } from './dynamic-forms/services/submitted.service';
+import { FormlyFieldStepper } from './dynamic-forms/form-wrappers/stepper/stepper-wrapper.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+
+
 export function requiredMessage(err: any, field: FormlyFieldConfig) {
   return `${field.key} is required`;
 }
@@ -30,6 +32,7 @@ export function requiredMessage(err: any, field: FormlyFieldConfig) {
     FormlyMatDatepickerModule,
     MatNativeDateModule,
     MatStepperModule,
+    MatProgressSpinnerModule,
     FormlyModule.forRoot({
       validationMessages: [{ name: 'required', message: requiredMessage }],
       types: [
