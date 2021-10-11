@@ -5,7 +5,6 @@ import { DynamicFormsComponent } from './dynamic-forms/dynamic-forms.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule, FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyMaterialModule } from '@ngx-formly/material';
-import { DynamicFormsService } from './dynamic-forms/services/dynamic-forms.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormlyMatDatepickerModule } from '@ngx-formly/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -15,11 +14,10 @@ import { FormlyFieldStepper } from './dynamic-forms/form-wrappers/stepper/steppe
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
+import { FormsParseAndCreateServices, requiredMessage } from './dynamic-forms/services/forms-parse-and-create.service';
+import { FormsServerCommunicationService } from './dynamic-forms/services/forms-server-communication.service';
 
 
-export function requiredMessage(err: any, field: FormlyFieldConfig) {
-  return `${field.key} is required`;
-}
 
 
 @NgModule({
@@ -50,6 +48,6 @@ export function requiredMessage(err: any, field: FormlyFieldConfig) {
     HttpClientModule
   ],
   exports: [DynamicFormsComponent],
-  providers: [DynamicFormsService]
+  providers: [FormsServerCommunicationService, FormsParseAndCreateServices]
 })
 export class DynamicFormsModule { }

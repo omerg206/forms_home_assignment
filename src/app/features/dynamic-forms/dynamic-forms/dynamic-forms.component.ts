@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
-import { DynamicFormsService } from './services/dynamic-forms.service';
+import { FormsServerCommunicationService } from './services/forms-server-communication.service';
 import { FormsStoreService } from './services/forms-store.service';
 
 @Component({
@@ -15,6 +15,7 @@ import { FormsStoreService } from './services/forms-store.service';
 export class DynamicFormsComponent implements OnInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject();
   private readonly formTypesSelectKey: string = 'formType';
+  private currentFormType: string ='';
 
   isSubmitted: boolean = false;
   form: FormGroup = new FormGroup({});
@@ -27,24 +28,25 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
 
   currentSelectedFormType: string = 'Main';
 
-  constructor(private dynamicFormsService: DynamicFormsService, public formsStoreService: FormsStoreService, private cd: ChangeDetectorRef) { }
+  constructor(private formsServerCommunicationService: FormsServerCommunicationService, public formsStoreService: FormsStoreService, private cd: ChangeDetectorRef) { }
 
 
   ngOnInit(): void {
-    const formsTypeFiled = this.dynamicFormsService.createFormTypesFiled(this.formTypesSelectKey, this.onFormTypeChange.bind(this))
+    const formsTypeFiled = this.formsServerCommunicationService.createFormTypesFiled(this.formTypesSelectKey, this.onFormTypeChange.bind(this));
     this.fields[0].fieldGroup?.push((formsTypeFiled));
   }
 
 
   onFormTypeChange(model: any, selectedFromType: any) {
+
     this.currentSelectedFormType = selectedFromType.value;
     this.model = { [this.formTypesSelectKey]: this.currentSelectedFormType };
-
+    this.currentFormType = selectedFromType;
     // reset form keep only form type selection;
     this.removeAllNonFormTypeFields();
 
-    this.dynamicFormsService.getFormDetails(this.currentSelectedFormType).pipe(
-      takeUntil(this.onDestroy$)).subscribe((res: FormlyFieldConfig[]) => {
+    this.formsServerCommunicationService.getFormDetails(this.currentSelectedFormType).pipe(takeUntil(this.onDestroy$))
+      .subscribe((res: FormlyFieldConfig[]) => {
       this.formsStoreService.setGettingFormDataServer({isDataFetchingInProgress: false, isError: false});
       this.updateFormFields(res);
       this.cd.detectChanges();
@@ -78,16 +80,17 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
 
   submit() {
     this.formsStoreService.setFormSubmitted({isSubmittingInProgress: true, isSubmitFail: false, isSubmitSuccess: false});
-    this.dynamicFormsService.submitFormToServer(this.model).pipe(takeUntil(this.onDestroy$))
+    this.formsServerCommunicationService.submitFormToServer(this.model, this.formTypesSelectKey).pipe(takeUntil(this.onDestroy$))
     .subscribe(() => {
 
       this.formsStoreService.setFormSubmitted({isSubmittingInProgress: false, isSubmitSuccess: true, isSubmitFail: false});
-      // this.fields.
-      alert('from submitted')
+
+      alert('form submitted')
     },
     (error) => {
       console.log(`error submitting  ${this.currentSelectedFormType}`, error);
       this.formsStoreService.setFormSubmitted({isSubmittingInProgress: false, isSubmitSuccess: false, isSubmitFail: true});
+      alert('failed to submit')
     })
   }
 

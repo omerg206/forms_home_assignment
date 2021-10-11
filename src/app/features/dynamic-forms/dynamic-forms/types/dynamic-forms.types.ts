@@ -4,6 +4,7 @@ import { FormlyFieldConfig, FormlyTemplateOptions } from '@ngx-formly/core';
 
 export interface FormsTypeSchema {
   result: Result;
+  succeeded: boolean;
 }
 
 export interface Result {
