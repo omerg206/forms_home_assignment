@@ -3,7 +3,7 @@
   #stepper
   errorMessage="Name is required."
 >
-  <mat-step
+  <mat-step #matStep
     *ngFor="
       let step of field.fieldGroup;
       let index = index;
@@ -17,15 +17,14 @@
         <div *ngIf="getDateFromServerState?.isDataFetchingInProgress">
           loading...
         </div>
+        <div *ngIf="errorMessage" class="error-fetching-data">{{errorMessage}}</div>
+        <div *ngIf="matStep.interacted && !($any(step!.formControl?.status) | isformsValid)" class="error-fetching-data">form not valid</div>
       </ng-template>
     </div>
 
     <mat-card><formly-field [field]="step"></formly-field></mat-card>
 
-    <div class="error-fetching-data" *ngIf="getDateFromServerState?.isError">
-      error getting data fro server
-    </div>
-
+    <!-- {{$any(this.stepper._steps)?._results[index]?.interacted}} -->
     <div class="buttons-container">
       <button
         matStepperPrevious

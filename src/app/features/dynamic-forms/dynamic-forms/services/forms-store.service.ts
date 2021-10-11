@@ -3,10 +3,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { FormSubmissionState, GetDateFromServerState } from "../types/dynamic-forms.types";
 
 
-@Injectable({ providedIn: 'platform' })
+@Injectable()
 export class FormsStoreService {
    private _formSubmission: BehaviorSubject<FormSubmissionState> = new BehaviorSubject<FormSubmissionState>({isSubmittingInProgress: false, isSubmitSuccess: false, isSubmitFail: false});
-  private _gettingFormDataServer: BehaviorSubject<GetDateFromServerState> = new BehaviorSubject<GetDateFromServerState>({isError: false, isDataFetchingInProgress: false});
+  private _gettingFormDataServer: BehaviorSubject<GetDateFromServerState> = new BehaviorSubject<GetDateFromServerState>({errorMessage: null, isDataFetchingInProgress: false});
 
   setFormSubmitted(param: Partial<FormSubmissionState>){
     this._formSubmission.next({...this._formSubmission.value, ...param});

@@ -16,6 +16,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import { FormsParseAndCreateServices, requiredMessage } from './dynamic-forms/services/forms-parse-and-create.service';
 import { FormsServerCommunicationService } from './dynamic-forms/services/forms-server-communication.service';
+import { FormsStoreService } from './dynamic-forms/services/forms-store.service';
 
 
 
@@ -48,6 +49,6 @@ import { FormsServerCommunicationService } from './dynamic-forms/services/forms-
     HttpClientModule
   ],
   exports: [DynamicFormsComponent],
-  providers: [FormsServerCommunicationService, FormsParseAndCreateServices]
+  providers: [FormsServerCommunicationService, FormsParseAndCreateServices, FormsStoreService]
 })
 export class DynamicFormsModule { }

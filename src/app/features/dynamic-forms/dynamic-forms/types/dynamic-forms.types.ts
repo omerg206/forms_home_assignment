@@ -74,7 +74,7 @@ export interface FormSubmissionState {
 }
 
 export interface GetDateFromServerState {
-  isDataFetchingInProgress: boolean, isError: boolean,
+  isDataFetchingInProgress: boolean, errorMessage: string | null,
 }
 
 

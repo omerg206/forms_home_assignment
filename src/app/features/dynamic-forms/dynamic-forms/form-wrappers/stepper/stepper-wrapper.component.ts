@@ -24,9 +24,10 @@ export function getFormDetailsValidator(control: FormControl, field: FormlyField
 
 
 export class FormlyFieldStepper extends FieldType implements OnInit, OnDestroy {
+  private onDestroy$: Subject<void> = new Subject();
   formSubmitState!: FormSubmissionState;
   getDateFromServerState!: GetDateFromServerState;
-  private onDestroy$: Subject<void> = new Subject();
+  errorMessage: string | null  = null;
 
   @ViewChild('stepper') stepper!: MatStepper;
 
@@ -39,9 +40,11 @@ export class FormlyFieldStepper extends FieldType implements OnInit, OnDestroy {
   ngOnInit(): void {
 
 
+
     this.formsStoreService.gettingFormDataServerChanges().pipe(debounceTime(500), (takeUntil(this.onDestroy$)))
       .subscribe((state: GetDateFromServerState) => {
         this.getDateFromServerState = state;
+        this.errorMessage = state.errorMessage;
         this.cd.detectChanges()
       })
 
@@ -51,8 +54,12 @@ export class FormlyFieldStepper extends FieldType implements OnInit, OnDestroy {
     })
 
 
+    this.form.valueChanges.pipe(debounceTime(50), takeUntil(this.onDestroy$)).subscribe(() => {
+
+    })
 
   }
+
 
 
   trackByFn(index: number, item: FormlyFieldConfig) {

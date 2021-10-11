@@ -34,12 +34,14 @@ export class FormsParseAndCreateServices {
    *  maybe the function should be irritative
    */
    parseFromDetailsResFormServer({ scheme, parsedDetails = [], currentParsedDetails = [], groupName }: ParseSchemaFormServerParams): FormlyFieldConfig[] {
+    //create root and set current parsed details
     if (parsedDetails.length === 0) {
-      currentParsedDetails = parsedDetails;
+      parsedDetails.push({key:groupName, fieldGroup: [], templateOptions: { label: this.normalizeStrings(groupName) } });
+      currentParsedDetails = parsedDetails[0].fieldGroup!;
     }
 
     for (const property in scheme) {
-      if (this.isNestedFormDetails(scheme[property])) {
+      if ( this.isNestedFormDetails(scheme[property] )) {
         const nestedScheme = scheme[property] as ServerFromDetailsSchemaPropValue;
         parsedDetails.push({key:property, fieldGroup: [], templateOptions: { label: this.normalizeStrings(property) } });
 
@@ -63,6 +65,7 @@ export class FormsParseAndCreateServices {
     const normalizedDisplay = this.normalizeStrings(display)
     return { value, label: normalizedDisplay }
   }
+
 
 
   private defaultFormsFieldsOptions: AllInputFieldDefaultOptions = {

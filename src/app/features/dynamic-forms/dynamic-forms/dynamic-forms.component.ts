@@ -47,13 +47,13 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
 
     this.formsServerCommunicationService.getFormDetails(this.currentSelectedFormType).pipe(takeUntil(this.onDestroy$))
       .subscribe((res: FormlyFieldConfig[]) => {
-      this.formsStoreService.setGettingFormDataServer({isDataFetchingInProgress: false, isError: false});
+      this.formsStoreService.setGettingFormDataServer({isDataFetchingInProgress: false, errorMessage: null});
       this.updateFormFields(res);
       this.cd.detectChanges();
 
     }, (error) => {
       console.log(`error getting data for ${this.currentSelectedFormType}`, error);
-      this.formsStoreService.setGettingFormDataServer({isDataFetchingInProgress: false, isError: true});
+      this.formsStoreService.setGettingFormDataServer({isDataFetchingInProgress: false, errorMessage:'error getting form type form Server'});
     })
 
   }
@@ -68,7 +68,7 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
     this.fields[0].fieldGroup = [(this.fields[0] as any).fieldGroup[0]];
     this.form =  new FormGroup({});
     this.formFiledsRefChangeToTriggerChangeDetection();
-    this.formsStoreService.setGettingFormDataServer({isError: false, isDataFetchingInProgress: true});
+    this.formsStoreService.setGettingFormDataServer({errorMessage: null, isDataFetchingInProgress: true});
     this.formsStoreService.setFormSubmitted({isSubmitFail: false, isSubmitSuccess: false, isSubmittingInProgress: false});
 
   }

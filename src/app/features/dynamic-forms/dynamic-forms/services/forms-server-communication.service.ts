@@ -1,10 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FormsTypeSchema, SchemasList, SelectionOption, ServerFormDetailsResponse, ServerFromDetailsSchemaPropValue, SubmitDataToServer, AllInputFieldDefaultOptions, DefaultFormFiledOptions, ParseSchemaFormServerParams } from '../types/dynamic-forms.types';
-import { first, map } from 'rxjs/operators';
+import { catchError, first, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormsParseAndCreateServices } from './forms-parse-and-create.service';
+import { of } from 'rxjs';
+import { FormsStoreService } from './forms-store.service';
 
 @Injectable()
 export class FormsServerCommunicationService {
@@ -16,7 +18,8 @@ export class FormsServerCommunicationService {
 
 
 
-  constructor(private http: HttpClient, private formsParseAndCreateServices: FormsParseAndCreateServices) {
+  constructor(private http: HttpClient, private formsStoreService: FormsStoreService,
+     private formsParseAndCreateServices: FormsParseAndCreateServices) {
 
   }
 
@@ -34,6 +37,8 @@ export class FormsServerCommunicationService {
 
 
   getFormsTypesFromServer(): Observable<SelectionOption[]> {
+    this.formsStoreService.setGettingFormDataServer({errorMessage: null, isDataFetchingInProgress: true} );
+
     return this.http.get<FormsTypeSchema>(this.serverBaseUrl + this.formsTypesUrl).pipe(
       first(),
       map((response: FormsTypeSchema) => {
@@ -41,8 +46,16 @@ export class FormsServerCommunicationService {
           throw Error(`failed to get form types`)
         }
 
+        this.formsStoreService.setGettingFormDataServer({errorMessage: null, isDataFetchingInProgress: false} );
+
         return response.result.schemasList.map((fromType: SchemasList) => this.formsParseAndCreateServices.createSelectionObject(fromType.type, fromType.display))
-      }))
+      }),
+      catchError((error: any) => {
+        this.formsStoreService.setGettingFormDataServer({errorMessage: 'error getting forms', isDataFetchingInProgress: false} );
+        console.log('error getting forms types', error);
+        return of([])
+      })
+      )
 
   }
 
