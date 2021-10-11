@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 // @import 'variables'
-// @import "@angular/material/prebuilt-themes/indigo-pink.css";
+// @import "@angular/material/prebuilt-themes/pink-bluegrey.css";
 *,
 *::after,
 *::before {
@@ -10,13 +10,16 @@
 html,
 body {
   height: 100%;
-
+  // background: grey;
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-:root{
+:root {
+}
 
+.mat-stepper-horizontal {
+  background-color: inherit;
 }
 
 .mat-horizontal-content-container {
@@ -28,10 +31,14 @@ body {
 }
 
 .mat-horizontal-stepper-content {
-  width: clamp(30%,70%,90%);
+  width: clamp(30%, 50%, 90%);
   // display: flex;
   // justify-content: center;
   // align-items: center;
+}
+
+.mat-card {
+  border: 3px solid #3f51b5;
 }
 
 // .mat-step-label {

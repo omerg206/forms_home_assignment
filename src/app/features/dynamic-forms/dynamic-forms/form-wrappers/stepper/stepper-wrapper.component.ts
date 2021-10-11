@@ -1,4 +1,4 @@
-import { FormsStoreService } from './../../services/forms-store';
+import { FormsStoreService } from '../../services/forms-store.service';
 import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FieldType, FormlyFieldConfig } from '@ngx-formly/core';
 import { Observable } from 'rxjs';
@@ -24,14 +24,14 @@ export function getFormDetailsValidator(control: FormControl, field: FormlyField
 
 
 export class FormlyFieldStepper extends FieldType implements OnInit, OnDestroy {
-   formSubmitState!: FormSubmissionState;
-   getDateFromServerState!: GetDateFromServerState;
-   private onDestroy$: Subject<void> = new Subject();
+  formSubmitState!: FormSubmissionState;
+  getDateFromServerState!: GetDateFromServerState;
+  private onDestroy$: Subject<void> = new Subject();
 
-   @ViewChild('stepper') stepper!: MatStepper;
+  @ViewChild('stepper') stepper!: MatStepper;
 
 
-  constructor(public formsStoreService: FormsStoreService,  private cd: ChangeDetectorRef) {
+  constructor(public formsStoreService: FormsStoreService, private cd: ChangeDetectorRef) {
     super()
   }
 
@@ -39,11 +39,11 @@ export class FormlyFieldStepper extends FieldType implements OnInit, OnDestroy {
   ngOnInit(): void {
 
 
-     this.formsStoreService.gettingFormDataServerChanges().pipe(debounceTime(500), (takeUntil(this.onDestroy$)))
-     .subscribe((state: GetDateFromServerState) => {
-      this.getDateFromServerState = state;
-      this.cd.detectChanges()
-     })
+    this.formsStoreService.gettingFormDataServerChanges().pipe(debounceTime(500), (takeUntil(this.onDestroy$)))
+      .subscribe((state: GetDateFromServerState) => {
+        this.getDateFromServerState = state;
+        this.cd.detectChanges()
+      })
 
     this.formsStoreService.formSubmittedChanges().pipe(takeUntil(this.onDestroy$)).subscribe((state: FormSubmissionState) => {
       this.formSubmitState = state;
@@ -54,23 +54,9 @@ export class FormlyFieldStepper extends FieldType implements OnInit, OnDestroy {
 
   }
 
-  isValid(field: FormlyFieldConfig,): boolean {
 
-    if (!field.fieldGroup) {
-      return !field.formControl?.errors;
-    }
-
-
-    return field.fieldGroup.every(f => this.isValid(f));
-  }
-
-  bla(step: any){
-    var a = this.stepper.selectedIndex;
-    //@ts-ignore
-    var b = this.field!.fieldGroup[a];
-       //@ts-ignore
-    var c = this.field!.fieldGroup[a].formControl;
-    debugger
+  trackByFn(index: number, item: FormlyFieldConfig) {
+    return item.key; // or item.id
   }
 
   ngOnDestroy(): void {

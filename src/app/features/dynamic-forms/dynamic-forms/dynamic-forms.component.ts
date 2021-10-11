@@ -4,7 +4,7 @@ import { FormlyFormOptions, FormlyFieldConfig } from '@ngx-formly/core';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { DynamicFormsService } from './services/dynamic-forms.service';
-import { FormsStoreService } from './services/forms-store';
+import { FormsStoreService } from './services/forms-store.service';
 
 @Component({
   selector: 'app-dynamic-forms',

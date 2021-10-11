@@ -1,35 +1,64 @@
-<mat-horizontal-stepper  labelPosition="bottom"  #stepper  errorMessage="Name is required.">
-  <mat-step [completed]="true"
-    *ngFor="let step of field.fieldGroup; let index = index; let last = last;">
-    <div class="stepper-label-container" >
-       <ng-template matStepLabel ><span class="stepper-text">{{ step.templateOptions?.label }}</span>
-      <div *ngIf="getDateFromServerState?.isDataFetchingInProgress">loading...</div>
-    </ng-template></div>
+<mat-horizontal-stepper
+  labelPosition="bottom"
+  #stepper
+  errorMessage="Name is required."
+>
+  <mat-step
+    *ngFor="
+      let step of field.fieldGroup;
+      let index = index;
+      let last = last;
+      trackBy: trackByFn
+    "
+  >
+    <div class="stepper-label-container">
+      <ng-template matStepLabel
+        ><span class="stepper-text">{{ step.templateOptions?.label }}</span>
+        <div *ngIf="getDateFromServerState?.isDataFetchingInProgress">
+          loading...
+        </div>
+      </ng-template>
+    </div>
 
+    <mat-card><formly-field [field]="step"></formly-field></mat-card>
 
-  <mat-card><formly-field [field]="step"></formly-field></mat-card>
-
-    <div class="error-fetching-data" *ngIf="getDateFromServerState?.isError">error getting data fro server </div>
+    <div class="error-fetching-data" *ngIf="getDateFromServerState?.isError">
+      error getting data fro server
+    </div>
 
     <div class="buttons-container">
-      <button matStepperPrevious *ngIf="index !== 0" mat-button
+      <button
+        matStepperPrevious
+        *ngIf="index !== 0"
+        mat-button
         class=""
-        type="button">
+        type="button"
+      >
         Back
       </button>
 
-      <button matStepperNext *ngIf="!last" mat-button
-        class="next-button" type="button"
-      [disabled]="!($any(step!.formControl?.status) | isformsValid)"
-        >
+      <button
+        matStepperNext
+        *ngIf="!last"
+        mat-button
+        class="next-button"
+        type="button"
+        [disabled]="!($any(step!.formControl?.status) | isformsValid)"
+      >
         Next
       </button>
 
-      <button mat-button  *ngIf="last && index > 0" class="submit-success"
-        [disabled]="!form.valid ||  formSubmitState.isSubmittingInProgress"
-        [ngClass]="{'submit-success': formSubmitState.isSubmitSuccess,
-        'submit-fail':    formSubmitState.isSubmitFail}"
-        type="submit">
+      <button
+        mat-button
+        *ngIf="last && index > 0"
+        class="submit-success"
+        [disabled]="!form.valid || formSubmitState.isSubmittingInProgress"
+        [ngClass]="{
+          'submit-success': formSubmitState.isSubmitSuccess,
+          'submit-fail': formSubmitState.isSubmitFail
+        }"
+        type="submit"
+      >
         Submit
       </button>
     </div>
