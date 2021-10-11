@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 import { FormlyFieldConfig, FormlyTemplateOptions } from "@ngx-formly/core";
 import { DefaultFormFiledOptions, ParseSchemaFormServerParams, ServerFromDetailsSchemaPropValue, FormPropertiesFromServer, SelectionOption, AllInputFieldDefaultOptions } from '../types/dynamic-forms.types';
+import { Observable } from 'rxjs';
+import { FormlyAttributeEvent } from "@ngx-formly/core/lib/components/formly.field.config";
 
 export function requiredMessage(err: any, field: FormlyFieldConfig) {
   return `${field.key} is required`;
@@ -67,6 +69,24 @@ export class FormsParseAndCreateServices {
   }
 
 
+  createFormTypesFiledStartUp(propName: string,onFormTypeChangeCb: FormlyAttributeEvent, formsTypesFromServer: any[] | Observable<any[]>  ): FormlyFieldConfig {
+    const fieldOptions: DefaultFormFiledOptions = {
+      type: 'select',
+      templateOptions: {
+        required: true,
+        readonly: true,
+        valueProp: (option: any) => option.value,
+        change: onFormTypeChangeCb,
+        label: 'Forms types',
+        options: formsTypesFromServer,
+      },
+    };
+
+    return this.createFormFiled(
+      propName,
+      fieldOptions
+    );
+  }
 
   private defaultFormsFieldsOptions: AllInputFieldDefaultOptions = {
     String: { type: 'input', templateOptions: {} },

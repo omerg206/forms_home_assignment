@@ -15,7 +15,6 @@ import { FormsStoreService } from './services/forms-store.service';
 export class DynamicFormsComponent implements OnInit, OnDestroy {
   private onDestroy$: Subject<void> = new Subject();
   private readonly formTypesSelectKey: string = 'formType';
-  private currentFormType: string ='';
 
   isSubmitted: boolean = false;
   form: FormGroup = new FormGroup({});
@@ -41,7 +40,6 @@ export class DynamicFormsComponent implements OnInit, OnDestroy {
 
     this.currentSelectedFormType = selectedFromType.value;
     this.model = { [this.formTypesSelectKey]: this.currentSelectedFormType };
-    this.currentFormType = selectedFromType;
     // reset form keep only form type selection;
     this.removeAllNonFormTypeFields();
 
